@@ -1,9 +1,9 @@
 let usuarios = [];
 let cochesEnCarrito = [];
 const carritoGuardado = localStorage.getItem('carrito');
-    if (carritoGuardado) {
-        cochesEnCarrito = JSON.parse(carritoGuardado);
-    }
+if (carritoGuardado) {
+	cochesEnCarrito = JSON.parse(carritoGuardado);
+}
 
 function registrarUsuario() {
 	const nombreUsuario = document.getElementById("nombreUsuario").value;
@@ -59,11 +59,16 @@ function validarTarjeta() {
 	const fechaCaducidad = document.getElementById('fechaCaducidad').value;
 	const cvc = document.getElementById('cvc').value;
 
+	if (nombreCompleto.trim() === '' || numeroTarjeta.trim() === '' || fechaCaducidad.trim() === '' || cvc.trim() === '') {
+		alert('Debe completar todos los campos para realizar la compra.');
+		return;
+	}
+
 	if (!/^\d+$/.test(numeroTarjeta)) {
 		alert('El número de tarjeta debe contener solo dígitos.');
 		return;
 	}
-	
+
 	if (!/^\d+$/.test(cvc)) {
 		alert('El CVC debe contener solo dígitos.');
 		return;
@@ -88,15 +93,14 @@ function agregarAlCarrito(nombreCoche, precioCoche, imagenCoche) {
 	const coche = { nombre: nombreCoche, precio: precioCoche, imagen: imagenCoche };
 	cochesEnCarrito.push(coche);
 	localStorage.setItem('carrito', JSON.stringify(cochesEnCarrito));
-    console.log('Carrito guardado en localStorage:', cochesEnCarrito);
+	console.log('Carrito guardado en localStorage:', cochesEnCarrito);
 }
 
 function mostrarCarrito() {
 	const listaCoches = document.getElementById("listaCoches");
-	const precioTotal = document.getElementById("precioTotal");
 
 	cochesEnCarrito.forEach(coche => {
-		
+
 		const fila = document.createElement("tr");
 		fila.innerHTML = `
                 <td>${coche.nombre}</td>
@@ -106,27 +110,47 @@ function mostrarCarrito() {
 		listaCoches.appendChild(fila);
 
 	});
-	
-	let totalPrecio = 0;
-	
-	cochesEnCarrito.forEach(coche => {
-		const precioNumerico = Number(coche.precio);
-		 if (!isNaN(precioNumerico)) {
+
+}
+
+function mostrarPrecioTotal() {
+    let totalPrecio = 0;
+
+    cochesEnCarrito.forEach(coche => {
+        const precioNumerico = Number(coche.precio);
+        if (!isNaN(precioNumerico)) {
             totalPrecio += precioNumerico;
-            
-            precioTotal.textContent = `${totalPrecio.toFixed(2)}€`;
         }
-	});
-       
-	
-	
+    });
+
+    console.log("Precio total calculado:", totalPrecio);
+
+    const precioTotalSpan = document.getElementById('precioTotal');
+    if (precioTotalSpan) {
+        precioTotalSpan.textContent = `${totalPrecio.toFixed(2)}€`;
+    }
 }
 
 function limpiarCarrito() {
-    const listaCoches = document.getElementById("listaCoches");
-    listaCoches.innerHTML = ''; 
-    
+    const nombreCompleto = document.getElementById('nombreCompleto').value;
+    const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+    const fechaCaducidad = document.getElementById('fechaCaducidad').value;
+    const cvc = document.getElementById('cvc').value;
+
+    if (!validarTarjeta(nombreCompleto, numeroTarjeta, fechaCaducidad, cvc)) {
+      
+        return;
+    }
+
+    cochesEnCarrito = []; 
     localStorage.removeItem('carrito');
+
+    const listaCoches = document.getElementById("listaCoches");
+    listaCoches.innerHTML = '';
+
+    mostrarPrecioTotal();
+
+    alert('Carrito limpiado correctamente');
 }
 
 document.addEventListener('DOMContentLoaded', function() {
