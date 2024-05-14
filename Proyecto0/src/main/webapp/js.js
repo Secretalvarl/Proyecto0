@@ -111,46 +111,46 @@ function mostrarCarrito() {
 
 	});
 
+	mostrarPrecioTotal();
 }
 
 function mostrarPrecioTotal() {
-    let totalPrecio = 0;
+	let totalPrecio = 0;
 
-    cochesEnCarrito.forEach(coche => {
-        const precioNumerico = Number(coche.precio);
-        if (!isNaN(precioNumerico)) {
-            totalPrecio += precioNumerico;
-        }
-    });
+	cochesEnCarrito.forEach(coche => {
+		const precioNumerico = Number(coche.precio);
+		if (!isNaN(precioNumerico)) {
+			totalPrecio += precioNumerico;
+		}
+	});
 
-    console.log("Precio total calculado:", totalPrecio);
-
-    const precioTotalSpan = document.getElementById('precioTotal');
-    if (precioTotalSpan) {
-        precioTotalSpan.textContent = `${totalPrecio.toFixed(2)}€`;
-    }
+	const precioTotalSpan = document.getElementById('precioTotal');
+	if (precioTotalSpan) {
+		precioTotalSpan.textContent = `${precioNumerico.toFixed(2)}€`;
+	}
 }
 
 function limpiarCarrito() {
-    const nombreCompleto = document.getElementById('nombreCompleto').value;
-    const numeroTarjeta = document.getElementById('numeroTarjeta').value;
-    const fechaCaducidad = document.getElementById('fechaCaducidad').value;
-    const cvc = document.getElementById('cvc').value;
+	const nombreCompleto = document.getElementById('nombreCompleto').value;
+	const numeroTarjeta = document.getElementById('numeroTarjeta').value;
+	const fechaCaducidad = document.getElementById('fechaCaducidad').value;
+	const cvc = document.getElementById('cvc').value;
 
-    if (!validarTarjeta(nombreCompleto, numeroTarjeta, fechaCaducidad, cvc)) {
-      
-        return;
-    }
+	if (validarTarjeta(nombreCompleto, numeroTarjeta, fechaCaducidad, cvc)) {
 
-    cochesEnCarrito = []; 
-    localStorage.removeItem('carrito');
+		localStorage.removeItem('carrito');
 
-    const listaCoches = document.getElementById("listaCoches");
-    listaCoches.innerHTML = '';
+		cochesEnCarrito = [];
 
-    mostrarPrecioTotal();
+		const listaCoches = document.getElementById("listaCoches");
+		listaCoches.innerHTML = '';
 
-    alert('Carrito limpiado correctamente');
+		const precioTotalSpan = document.getElementById('precioTotal');
+		if (precioTotalSpan) {
+			precioTotalSpan.textContent = '0.00€';
+		}
+
+	}
 }
 
 document.addEventListener('DOMContentLoaded', function() {
